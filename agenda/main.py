@@ -7,7 +7,7 @@ from csv import reader
 
 contatos = []
 
-with open('contatos.csv', 'r') as arquivo:
+with open('agenda/contatos.csv', 'r') as arquivo:
     leitor = reader(arquivo)
     next(leitor)
     for linha in leitor:
@@ -22,6 +22,8 @@ class Painel(Tk):
         self.resizable(False, False)
         self.geometry('700x550')
         self.configure(background='#45a8f7')
+        self.img = PhotoImage(file='agenda/listatelefonica.png')
+        self.logo = Label(self, image=self.img, bg='#45a8f7').place(relx=0.5, rely=0.07, anchor=CENTER)
         
         # Tela dos contatos
         self.frame_contatos = Frame(self)
@@ -30,10 +32,8 @@ class Painel(Tk):
         # Botões
         self.adicionar = Button(self, text='Adicionar aos Contatos', command=lambda: self.adicionar_contato())
         self.adicionar.place(width=170, height=25, x=85, y=220)
-        
         self.remover = Button(self, text='Remover contato', command=lambda: self.remover_contato(), fg='red')
         self.remover.place(width=170, height=25, x=500, y=160)
-        
         self.sair = Button(self, text='Sair', command=lambda: self.sair_app(), fg='red').place(relx=0.4, rely=0.94, width=130, height=25)
         
         # colunas
@@ -59,13 +59,13 @@ class Painel(Tk):
         self.tree.configure(yscroll=barra_scroll.set)
         barra_scroll.grid(row=0, column=1, sticky='ns')
         
-        # Adicionar novo contato
-        Label(self, text='AGENDA DE CONTATOS', fg='black', bg='#0471c9', font='Arial, 25').place(relx=0.5, rely=0.08, anchor=CENTER, width=1000, height=100)
+        # Adicionar/remover novo contato
+        Label(self, text='ADICIONAR CONTATOS', bg='#45a8f7', font=('Arial', 11, 'bold')).place(x= 80, y=95)
         Label(self, text='Nome:', font=('Arial', 12, 'bold'), bg='#45a8f7', fg='white').place(width=80, height=21, x=13, y=130)
         Label(self, text='Tel.:', font=('Arial', 12, 'bold'), bg='#45a8f7', fg='white').place(width=80, height=21, x=4, y=160)
         Label(self, text='Email:', font=('Arial', 12, 'bold'), bg='#45a8f7', fg='white').place(width=80, height=21, x=13, y=190)
         Label(self, text='Nome:', font=('Arial', 12, 'bold'), bg='#45a8f7', fg='white').place(width=80, height=21, x=420, y=130)
-        
+        Label(self, text='REMOVER CONTATO', bg='#45a8f7', font=('Arial', 11, 'bold')).place(x= 500, y=95)
         # Entrada do usuário
         self.nome_input = StringVar()
         self.nome_input.set('')
@@ -75,15 +75,13 @@ class Painel(Tk):
         self.telefone_input.set('')
         self.email_input = StringVar()
         self.email_input.set('')
-        
-        
         self.nome_entrada = Entry(self, background='white', textvariable=self.nome_input).place(width=170, height=20, x=85, y=130)
         self.nome_remover = Entry(self, background='white', textvariable=self.nome_remover_input).place(width=170, height=20, x=500, y=130)
         self.telefone_entrada = Entry(self, background='white', textvariable=self.telefone_input).place(width=170, height=20, x=85, y=160)
         self.email_entrada = Entry(self, background='white', textvariable=self.email_input).place(width=170, height=20, x=85, y=190)
         
         
-        # Funções
+    # Funções
              
     def adicionar_contato(self: object) -> None:
         if self.nome_input.get() != '' and self.telefone_input.get() != '' and self.email_input.get() != '':
@@ -120,7 +118,7 @@ class Painel(Tk):
         for contato in contatos:
             contato[0] = str(contato[0])
             self.tree.insert('', END, values=contato)
-        with open('contatos.csv', 'w') as arquivo:
+        with open('agenda/contatos.csv', 'w') as arquivo:
             arquivo.write('Nome,Telefone,Email\n')
             for contato in contatos:
                 if contato[0] != '':
